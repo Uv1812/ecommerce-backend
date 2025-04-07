@@ -1,0 +1,21 @@
+{% extends 'admin_dashboard/admin_base.html' %}
+<form method="POST">
+    {% csrf_token %}  <!-- ✅ CSRF Token is required -->
+    
+    <label>Name:</label>
+    <input type="text" name="name" value="{{ tailor.name }}" required>
+
+    <label>Email:</label>
+    <input type="email" name="email" value="{{ tailor.email }}" required>
+
+    <label>Specialization:</label>
+    <input type="text" name="specialization" value="{{ tailor.specialization }}" required>
+
+    <button type="submit">Save Changes</button>
+</form>
+
+{% if messages %}
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+{% endif %}

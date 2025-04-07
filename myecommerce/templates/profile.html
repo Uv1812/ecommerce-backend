@@ -1,0 +1,910 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Profile - Bhavi India Fashion</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Marcellus&family=Jost:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Navigation -->
+    {% include 'navbar.html' %}
+
+    <main class="container my-5">
+      <div class="row">
+        <!-- Profile Sidebar -->
+        <div class="col-md-3 mb-4">
+          <div class="profile-sidebar card">
+            <div class="card-body text-center">
+              <div class="profile-image mb-3">
+                <img
+                  src="{% static 'images/uv.png' %}"
+                  class="rounded-circle"
+                  width="100"
+                  height="100"
+                  alt="Profile Image"
+                  id="profileImage"
+                />
+              </div>
+              <p class="card-text mb-1">
+                <span id="infoUsername">{{ user.username }}</span>
+              </p>
+              <p class="card-text mb-1">
+                <span id="infoEmail">{{ user.email }}</span>
+              </p>
+              <hr />
+              <div class="profile-menu">
+                <div
+                  class="nav flex-column nav-pills"
+                  id="v-pills-tab"
+                  role="tablist"
+                  aria-orientation="vertical"
+                >
+                  <button
+                    class="nav-link active"
+                    id="v-pills-overview-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#v-pills-overview"
+                    type="button"
+                    role="tab"
+                    aria-selected="true"
+                  >
+                    Overview
+                  </button>
+                  <button
+                    class="nav-link"
+                    id="v-pills-orders-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#v-pills-orders"
+                    type="button"
+                    role="tab"
+                    aria-selected="false"
+                  >
+                    My Orders
+                  </button>
+                  <button
+                    class="nav-link"
+                    id="v-pills-wishlist-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#v-pills-wishlist"
+                    type="button"
+                    role="tab"
+                    aria-selected="false"
+                  >
+                    My Wishlist
+                  </button>
+                  <button
+                    class="nav-link"
+                    id="v-pills-address-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#v-pills-address"
+                    type="button"
+                    role="tab"
+                    aria-selected="false"
+                  >
+                    Addresses
+                  </button>
+                  <button
+                    class="nav-link"
+                    id="v-pills-settings-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#v-pills-settings"
+                    type="button"
+                    role="tab"
+                    aria-selected="false"
+                  >
+                    Edit Profile
+                  </button>
+                </div>
+              </div>
+              <hr />
+              <!-- Replace the button with a form -->
+              <div>
+                 <form id="sidebar-logout-form" action="/logout/" method="post">
+                     {% csrf_token %}
+                     <button type="submit" class="btn btn-outline-danger w-100 logout-btn">Logout</button>
+                 </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="col-md-9">
+          <div class="card">
+            <div class="card-body">
+              <div class="tab-content" id="v-pills-tabContent">
+                <!-- Overview Tab -->
+                <div
+                  class="tab-pane fade show active"
+                  id="v-pills-overview"
+                  role="tabpanel"
+                >
+                  <h4 class="mb-4">Account Overview</h4>
+                  <div class="row">
+                    <div class="col-md-6 mb-4">
+                      <div class="card h-100">
+                        <div class="card-body">
+                          <h5 class="card-title">Personal Information</h5>
+                          <p class="card-text mb-1">
+                            <strong>Username:</strong>
+                            <span id="infoUsername">{{ user.username }}</span>
+                          </p>
+                          <p class="card-text mb-1">
+                            <strong>Email:</strong>
+                            <span id="infoEmail">{{ user.email }}</span>
+                          </p>
+                          <p class="card-text mb-1">
+                            <strong>Phone:</strong>
+                            <span id="infoPhone">{{ user.phone }} </span>
+                          </p>
+                          <button
+                            class="btn btn-sm btn-outline-primary mt-3"
+                            id="v-pills-settings-btn"
+                          >
+                            Edit
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                      <div class="card h-100">
+                        <div class="card-body">
+                          <h5 class="card-title">Default Address</h5>
+                          <p class="card-text" id="defaultAddress">
+                            {% if customer.address %} 
+                              {{ customer.address }} 
+                            {% else %} 
+                              No address added yet. Add your shipping
+                              address in Edit Profile. 
+                            {% endif %}
+                          </p>
+                          <button
+                            class="btn btn-sm btn-outline-primary mt-3"
+                            id="v-pills-address-btn"
+                          >
+                            Add Address
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                      <div class="card h-100">
+                        <div class="card-body">
+                          <h5 class="card-title">Recent Orders</h5>
+                          <div class="recent-orders" id="recentOrders">
+                            {% if recent_orders %}
+                                {% for order in recent_orders %}
+                                    <p>Order #{{ order.order_id }} - {{ order.total_amount }} ({{ order.status }})</p>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-muted">No recent orders found.</p>
+                            {% endif %}
+                        </div>
+                          <button
+                            class="btn btn-sm btn-outline-primary mt-3"
+                            id="v-pills-orders-btn"
+                          >
+                            View All Orders
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                      <div class="card h-100">
+                        <div class="card-body">
+                          <h5 class="card-title">Wishlist</h5>
+                          <div class="wishlist-preview" id="wishlistPreview">
+                            {% if wishlist_items %}
+                                {% for item in wishlist_items|slice:":3" %}
+                                    <p>{{ item.product.name }} - {{ item.product.price }}</p>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-muted">Your wishlist is empty.</p>
+                            {% endif %}
+                        </div>
+                          <button class="btn btn-sm btn-outline-primary mt-3" id="v-pills-wishlist-btn">
+                            View Wishlist
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Orders Tab -->
+                <div class="tab-pane fade" id="v-pills-orders" role="tabpanel">
+                  <h4 class="mb-4">My Orders</h4>
+                  <div id="ordersList">
+                    {% if all_orders %}
+                        {% for order in all_orders %}
+                            <div class="order-item">
+                                Order #{{ order.order_id }} - {{ order.order_date }} - {{ order.total_amount }} ({{ order.status }})
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-info"><p class="mb-0">You haven't placed any orders yet.</p></div>
+                    {% endif %}
+                </div>
+                </div>
+
+                <!-- Wishlist Tab -->
+                <div class="tab-pane fade" id="v-pills-wishlist" role="tabpanel">
+                  <h4 class="mb-4">My Wishlist</h4>
+                  <div class="row g-4" id="wishlistItems">
+                    {% if wishlist_items %}
+                        {% for item in wishlist_items %}
+                            <div class="col-md-4">
+                                <div class="card">
+                                    {% if item.product.image %}
+                                        <img src="{{ item.product.image.url }}" class="card-img-top" alt="{{ item.product.name }}">
+                                    {% endif %}
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ item.product.name }}</h5>
+                                        <p class="card-text">{{ item.product.price }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div id="emptyWishlistMessage" class="text-center py-5">
+                          <i class="far fa-heart fa-3x text-muted mb-3"></i>
+                          <h5 class="mb-3">Your wishlist is empty</h5>
+                          <a href="{% url 'catalog' %}" class="btn btn-primary">Explore Products</a>
+                        </div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- Address Tab -->
+                <div class="tab-pane fade" id="v-pills-address" role="tabpanel">
+                  <h4 class="mb-4">My Addresses</h4>
+                  <div id="addressList">
+                    {% if customer.address %}
+                        <p>{{ customer.address }}</p>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <p class="mb-0">You haven't added an address yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+                  <button
+                    class="btn btn-primary mt-3"
+                    data-bs-toggle="modal"
+                    data-bs-target="#addAddressModal"
+                  >
+                    <i class="fas fa-plus me-2"></i>Add New Address
+                  </button>
+                </div>
+
+                <!-- Settings Tab -->
+                <div
+                  class="tab-pane fade"
+                  id="v-pills-settings"
+                  role="tabpanel"
+                >
+                  <h4 class="mb-4">Edit Profile</h4>
+                  <form id="profileForm">
+                    <div class="mb-3">
+                      <label for="editUsername" class="form-label">Username</label>
+                      <input type="text" class="form-control" id="editUsername" name="username" value="{{ customer.name }}"/>
+                    </div>
+                    <div class="mb-3">
+                      <label for="editEmail" class="form-label"
+                        >Email Address</label
+                      >
+                      <input
+                        type="email"
+                        class="form-control"
+                        id="editEmail"
+                        name="email"
+                        value="{{ customer.email }}"
+                        readonly
+                      />
+                      <small class="text-muted">Email cannot be changed</small>
+                    </div>
+                    <div class="mb-3">
+                      <label for="editPhone" class="form-label"
+                        >Phone Number</label
+                      >
+                      <input
+                        type="tel"
+                        class="form-control"
+                        id="editPhone"
+                        name="phone"
+                        value="{{ customer.phone }}"
+                      />
+                    </div>
+                    <hr />
+                    <h5 class="mb-3">Change Password</h5>
+                    <div class="mb-3">
+                      <label for="currentPassword" class="form-label"
+                        >Current Password</label
+                      >
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="currentPassword"
+                        name="current_password"
+                        value="{{ customer.password }}"
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label for="newPassword" class="form-label"
+                        >New Password</label
+                      >
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="newPassword"
+                        name="new_password"
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label for="confirmPassword" class="form-label"
+                        >Confirm New Password</label
+                      >
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="confirmPassword"
+                        name="confirm_password"
+                      />
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                      Save Changes
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Add Address Modal -->
+    <div
+      class="modal fade"
+      id="addAddressModal"
+      tabindex="-1"
+      aria-labelledby="addAddressModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addAddressModalLabel">
+              Add New Address
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="addressForm">
+              <div class="mb-3">
+                <label for="fullName" class="form-label">Full Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="fullName"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="phoneNumber" class="form-label">Phone Number</label>
+                <input
+                  type="tel"
+                  class="form-control"
+                  id="phoneNumber"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="addressLine1" class="form-label"
+                  >Address Line 1</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="addressLine1"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="addressLine2" class="form-label"
+                  >Address Line 2</label
+                >
+                <input type="text" class="form-control" id="addressLine2" />
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="city" class="form-label">City</label>
+                  <input type="text" class="form-control" id="city" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="state" class="form-label">State</label>
+                  <input type="text" class="form-control" id="state" required />
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="pincode" class="form-label">Pincode</label>
+                <input type="text" class="form-control" id="pincode" required />
+              </div>
+              <div class="mb-3 form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="defaultAddressCheck"
+                />
+                <label class="form-check-label" for="defaultAddressCheck"
+                  >Make this my default address</label>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Save Address
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% include 'footer.html' %}
+    <div id="notification-area" class="position-fixed bottom-0 end-0 p-3"></div>
+    {% include 'login.html' %}
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/main.js'%}"></script>
+    <script>
+      $(document).ready(function() {
+          // Fetch user data from Django backend
+          function fetchUserData() {
+              $.ajax({
+                  url: '/get-user/',  // Django endpoint to fetch user data
+                  type: 'GET',
+                  dataType: 'json',
+                  success: function(data) {
+                      if (data.username) {
+                          // Update profile sidebar
+                          $('#profileUsername').text(data.username);
+                          $('#profileEmail').text(data.email);
+
+                          // Update overview tab
+                          $('#infoUsername').text(data.username);
+                          $('#infoEmail').text(data.email);
+                          $('#infoPhone').text(data.phone || 'Not added');
+
+                          // Update form fields
+                          $('#editUsername').val(data.username);
+                          $('#editEmail').val(data.email);
+                          $('#editPhone').val(data.phone || '');
+
+                          // Load other user-related data
+                          loadAddresses();
+                          loadWishlistItems();
+                          loadOrderHistory();
+                      } else {
+                          window.location.href = '{% url "index" %}';  // Redirect to login if user not found
+                      }
+                  },
+                  error: function() {
+                      window.location.href = '{% url "index" %}';  // Redirect if error occurs
+                  }
+              });
+          }
+
+          // Load address data
+          function loadAddresses() {
+              const addresses = JSON.parse(localStorage.getItem('addresses') || '[]');
+
+              if (addresses.length === 0) {
+                  $('#addressList').html(`
+                      <div class="alert alert-info">
+                          <p class="mb-0">You haven't added any addresses yet.</p>
+                      </div>
+                  `);
+                  $('#defaultAddress').text('No address added yet. Add your default shipping address.');
+                  return;
+              }
+
+              // Clear addresses list
+              $('#addressList').empty();
+
+              // Find default address
+              const defaultAddress = addresses.find(addr => addr.isDefault);
+
+              if (defaultAddress) {
+                  $('#defaultAddress').html(`
+                      ${defaultAddress.fullName}<br>
+                      ${defaultAddress.addressLine1}, ${defaultAddress.addressLine2 ? defaultAddress.addressLine2 + ', ' : ''}
+                      ${defaultAddress.city}, ${defaultAddress.state} - ${defaultAddress.pincode}<br>
+                      Phone: ${defaultAddress.phoneNumber}
+                  `);
+              } else {
+                  $('#defaultAddress').text('No default address set.');
+              }
+
+              // Display all addresses
+              addresses.forEach((address, index) => {
+                  const addressCard = `
+                      <div class="card mb-3">
+                          <div class="card-body">
+                              <div class="d-flex justify-content-between align-items-start">
+                                  <div>
+                                      <h5 class="card-title">${address.fullName} ${address.isDefault ? '<span class="badge bg-primary ms-2">Default</span>' : ''}</h5>
+                                      <p class="card-text">
+                                          ${address.addressLine1}, ${address.addressLine2 ? address.addressLine2 + ', ' : ''}
+                                          ${address.city}, ${address.state} - ${address.pincode}<br>
+                                          Phone: ${address.phoneNumber}
+                                      </p>
+                                  </div>
+                                  <div class="address-actions">
+                                      <button class="btn btn-sm btn-outline-primary me-2 edit-address" data-index="${index}">Edit</button>
+                                      <button class="btn btn-sm btn-outline-danger delete-address" data-index="${index}">Delete</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  `;
+                  $('#addressList').append(addressCard);
+              });
+          }
+
+          // Load wishlist items
+          function loadWishlistItems() {
+              let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+
+              if (wishlist.length === 0) {
+                  $('#wishlistItems').hide();
+                  $('#emptyWishlistMessage').show();
+                  $('#wishlistPreview').html(`<p class="text-muted">Your wishlist is empty.</p>`);
+                  return;
+              }
+
+              // Hide empty message, show items
+              $('#wishlistItems').show();
+              $('#emptyWishlistMessage').hide();
+
+              // Clear existing items
+              $('#wishlistItems').empty();
+
+              // Sample product data (in real app, you'd fetch this from server)
+              const products = [
+                  { id: 1, name: 'Embroidered Dupatta', category: 'Dupatta', price: 1299, img: 'https://via.placeholder.com/300x300' },
+                  { id: 2, name: 'Designer Kurti', category: 'Kurti', price: 1199, img: 'https://via.placeholder.com/300x300' },
+                  { id: 3, name: 'Silk Blouse', category: 'Blouses', price: 1899, img: 'https://via.placeholder.com/300x300' },
+                  { id: 4, name: 'Choli Set', category: 'Choli', price: 2299, img: 'https://via.placeholder.com/300x300' },
+              ];
+
+              // Get cart items
+              let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+              // Preview section (just show first 2)
+              $('#wishlistPreview').empty();
+              const previewItems = wishlist.slice(0, 2);
+
+              if (previewItems.length > 0) {
+                  const previewList = $('<div class="row g-2"></div>');
+
+                  previewItems.forEach(productId => {
+                      const product = products.find(p => p.id === productId);
+                      if (product) {
+                          const previewItem = `
+                              <div class="col-6">
+                                  <div class="d-flex align-items-center">
+                                      <img src="${product.img}" class="img-fluid rounded" width="50" alt="${product.name}">
+                                      <div class="ms-2">
+                                          <p class="mb-0 small">${product.name}</p>
+                                          <p class="mb-0 text-primary small">₹${product.price}</p>
+                                      </div>
+                                  </div>
+                              </div>
+                          `;
+                          previewList.append(previewItem);
+                      }
+                  });
+
+                  $('#wishlistPreview').append(previewList);
+                  if (wishlist.length > 2) {
+                      $('#wishlistPreview').append(`<p class="small text-muted mt-2">+${wishlist.length - 2} more items</p>`);
+                  }
+              } else {
+                  $('#wishlistPreview').html(`<p class="text-muted">Your wishlist is empty.</p>`);
+              }
+
+              // Render each wishlist item
+              {% comment %} wishlist.forEach(productId => {
+                  const product = products.find(p => p.id === productId);
+                  if (product) {
+                      // Check if this product is in the cart
+                      const isInCart = cart.includes(product.id);
+                      const cartButtonText = isInCart ? 'Go to Cart' : 'Add to Cart';
+                      const cartButtonClass = isInCart ? 'btn-success' : 'btn-primary';
+                      const cartButtonAction = isInCart ? 'go-to-cart' : 'add-to-cart-btn';
+
+                      const wishlistItem = `
+                          <div class="col-md-6 col-lg-4">
+                              <div class="card h-100 wishlist-card">
+                                  <div class="position-relative">
+                                      <img src="${product.img}" class="card-img-top" alt="${product.name}">
+                                      <button class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 remove-wishlist" data-product-id="${product.id}">
+                                          <i class="fas fa-times"></i>
+                                      </button>
+                                  </div>
+                                  <div class="card-body">
+                                      <h5 class="card-title">${product.name}</h5>
+                                      <p class="text-muted small mb-2">${product.category}</p>
+                                      <p class="text-primary fw-bold mb-3">₹${product.price}</p>
+                                      <div class="d-grid gap-2">
+                                          <button class="btn ${cartButtonClass} ${cartButtonAction}" data-product-id="${product.id}">${cartButtonText}</button>
+                                          <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-secondary">View Details</a>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      `;
+                      $('#wishlistItems').append(wishlistItem);
+                  }
+              });
+          }
+
+          // Load order history
+          function loadOrderHistory() {
+              const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+
+              if (orders.length === 0) {
+                  $('#ordersList').html(`
+                      <div class="alert alert-info">
+                          <p class="mb-0">You haven't placed any orders yet.</p>
+                      </div>
+                  `);
+                  $('#recentOrders').html(`<p class="text-muted">No recent orders found.</p>`);
+                  return;
+              }
+
+              // Sort orders by date (newest first)
+              orders.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+              // Recent orders (just show first 2)
+              $('#recentOrders').empty();
+              const recentOrders = orders.slice(0, 2); {% endcomment %}
+
+              recentOrders.forEach(order => {
+                  const recentOrder = `
+                      <div class="d-flex justify-content-between align-items-center mb-2 small">
+                          <span>Order #${order.id}</span>
+                          <span class="badge ${order.status === 'Delivered' ? 'bg-success' : 'bg-warning'}">${order.status}</span>
+                      </div>
+                  `;
+                  $('#recentOrders').append(recentOrder);
+              });
+
+              // All orders
+              $('#ordersList').empty();
+
+              orders.forEach(order => {
+                  const orderCard = `
+                      <div class="card mb-3">
+                          <div class="card-header bg-light">
+                              <div class="d-flex justify-content-between align-items-center">
+                                  <div>
+                                      <strong>Order #${order.id}</strong>
+                                      <span class="ms-3 text-muted small">Placed on: ${order.date}</span>
+                                  </div>
+                                  <span class="badge ${order.status === 'Delivered' ? 'bg-success' : order.status === 'Processing' ? 'bg-warning' : 'bg-info'}">${order.status}</span>
+                              </div>
+                          </div>
+                          <div class="card-body">
+                              <div class="order-items mb-3">
+                                  ${order.items.map(item => `
+                                      <div class="d-flex mb-2">
+                                          <img src="${item.img}" class="img-fluid rounded" width="50" height="50" alt="${item.name}">
+                                          <div class="ms-3">
+                                              <p class="mb-0">${item.name}</p>
+                                              <p class="text-muted small mb-0">Qty: ${item.quantity} × ₹${item.price}</p>
+                                          </div>
+                                      </div>
+                                  `).join('')}
+                              </div>
+                              <div class="d-flex justify-content-between">
+                                  <p class="mb-0"><strong>Total:</strong> ₹${order.total}</p>
+                                  <button class="btn btn-outline-primary btn-sm">View Details</button>
+                              </div>
+                          </div>
+                      </div>
+                  `;
+                  $('#ordersList').append(orderCard);
+              });
+          }
+
+          // Save profile changes
+          {% comment %} $('#profileForm').submit(function(e) {
+              e.preventDefault();
+
+              const username = $('#editUsername').val();
+              const phone = $('#editPhone').val();
+
+              // Get current user
+              let user = JSON.parse(localStorage.getItem('user'));
+
+              // Update user data
+              user.username = username;
+              user.phone = phone;
+
+              // Save updated user
+              localStorage.setItem('user', JSON.stringify(user));
+
+              // Show notification
+              showNotification('Profile updated successfully!', 'success');
+
+              // Reload user data to update UI
+              loadUserData();
+          }); {% endcomment %}
+
+          // Save new address
+          $('#addressForm').submit(function(e) {
+              e.preventDefault();
+
+              const newAddress = {
+                  fullName: $('#fullName').val(),
+                  phoneNumber: $('#phoneNumber').val(),
+                  addressLine1: $('#addressLine1').val(),
+                  addressLine2: $('#addressLine2').val(),
+                  city: $('#city').val(),
+                  state: $('#state').val(),
+                  pincode: $('#pincode').val(),
+                  isDefault: $('#defaultAddressCheck').is(':checked')
+              };
+
+              // Get current addresses
+              let addresses = JSON.parse(localStorage.getItem('addresses') || '[]');
+
+              // If this is set as default, unset any existing default
+              if (newAddress.isDefault) {
+                  addresses = addresses.map(addr => ({
+                      ...addr,
+                      isDefault: false
+                  }));
+              }
+
+              // Add new address
+              addresses.push(newAddress);
+
+              // Save addresses
+              localStorage.setItem('addresses', JSON.stringify(addresses));
+
+              // Close modal and reset form
+              $('#addAddressModal').modal('hide');
+              $('#addressForm')[0].reset();
+
+              // Show notification
+              showNotification('Address added successfully!', 'success');
+
+              // Reload addresses
+              loadAddresses();
+          });
+
+          // Button handlers for tab navigation
+          $('#v-pills-settings-btn').click(function() {
+              $('#v-pills-settings-tab').tab('show');
+          });
+
+          $('#v-pills-address-btn').click(function() {
+              $('#v-pills-address-tab').tab('show');
+          });
+
+          $('#v-pills-orders-btn').click(function() {
+              $('#v-pills-orders-tab').tab('show');
+          });
+
+          $('#v-pills-wishlist-btn').click(function() {
+              $('#v-pills-wishlist-tab').tab('show');
+          });
+
+          // Remove from wishlist
+          $(document).on('click', '.remove-wishlist', function() {
+              const productId = $(this).data('product-id');
+
+              // Remove from local storage
+              let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+              wishlist = wishlist.filter(id => id !== productId);
+              localStorage.setItem('wishlist', JSON.stringify(wishlist));
+
+              // Update wishlist count
+              $('.wishlist-count').text(wishlist.length);
+
+              // Show notification
+              showNotification('Product removed from wishlist!', 'info');
+
+              // Reload wishlist items
+              loadWishlistItems();
+          });
+
+          // Add to cart from wishlist
+          $(document).on('click', '.add-to-cart-btn', function() {
+              const productId = $(this).data('product-id');
+
+              // Add to cart in local storage
+              let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+              cart.push(productId);
+              localStorage.setItem('cart', JSON.stringify(cart));
+
+              // Update cart count
+              $('.cart-count').text(cart.length);
+
+              // Update button to "Go to Cart"
+              $(this).removeClass('btn-primary add-to-cart-btn').addClass('btn-success go-to-cart');
+              $(this).text('Go to Cart');
+
+              // Show notification
+              showNotification('Product added to cart successfully!', 'success');
+          });
+
+          // Go to cart when clicked
+          $(document).on('click', '.go-to-cart', function() {
+              window.location.href = "{% url 'contact' %}";
+          });
+
+          // Delete address
+          $(document).on('click', '.delete-address', function() {
+              const index = $(this).data('index');
+
+              // Get current addresses
+              let addresses = JSON.parse(localStorage.getItem('addresses') || '[]');
+
+              // Remove address
+              addresses.splice(index, 1);
+
+              // Save addresses
+              localStorage.setItem('addresses', JSON.stringify(addresses));
+
+              // Show notification
+              showNotification('Address deleted successfully!', 'info');
+
+              // Reload addresses
+              loadAddresses();
+          });
+
+          // Notification helper
+          function showNotification(message, type) {
+              const alertClass = type === 'success' ? 'alert-success' :
+                                type === 'info' ? 'alert-info' :
+                                type === 'warning' ? 'alert-warning' : 'alert-danger';
+
+              const notification = $(`
+                  <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                      ${message}
+                      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                  </div>
+              `);
+
+              $('#notification-area').append(notification);
+              setTimeout(() => {
+                  notification.alert('close');
+              }, 3000);
+          }
+
+          // Load user data when page loads
+          loadUserData();
+      });
+    </script>
+  </body>
+</html>

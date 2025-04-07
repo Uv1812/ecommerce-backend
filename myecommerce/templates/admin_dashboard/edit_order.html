@@ -1,0 +1,24 @@
+{% extends "admin_dashboard/admin_base.html" %}
+
+{% block content %}
+<h2>Edit Order</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    
+    <label>Order ID:</label>
+    <input type="text" value="{{ order.id }}" disabled>
+    
+    <label>Status:</label>
+    <select name="status">
+        <option value="Pending" {% if order.status == "Pending" %}selected{% endif %}>Pending</option>
+        <option value="Shipped" {% if order.status == "Shipped" %}selected{% endif %}>Shipped</option>
+        <option value="Delivered" {% if order.status == "Delivered" %}selected{% endif %}>Delivered</option>
+    </select>
+
+    <button type="submit">Save Changes</button>
+</form>
+
+<a href="{% url 'list_orders' %}">Back to Orders</a>
+
+{% endblock %}

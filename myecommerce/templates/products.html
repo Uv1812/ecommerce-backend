@@ -1,0 +1,29 @@
+{% extends 'admin_dashboard/admin_base.html' %}
+
+{% block title %}Products{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Our Products</h2>
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">{{ product.description }}</p>
+                    <p class="text-primary"><strong>₹{{ product.price }}</strong></p>
+                    <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success">Add to Cart</a>
+                    <a href="{% url 'add_to_wishlist' product.id %}" class="btn btn-outline-danger">
+                        ❤️ Wishlist
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">No products available.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

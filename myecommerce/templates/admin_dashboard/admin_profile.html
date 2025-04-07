@@ -1,0 +1,36 @@
+{% extends "admin_dashboard/admin_base.html" %}
+{% load static %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/admin_styles.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-profile-container">
+    <div class="profile-header">
+        <h2>Admin Profile</h2>
+    </div>
+
+    <div class="profile-card">
+        <div class="profile-avatar">
+            <img src="{% static 'assets/img/avatar.png' %}" alt="Admin Avatar">
+        </div>
+        <div class="profile-info">
+            <h3>{{ admin.username }}</h3>
+            <p class="admin-role">Administrator</p>
+            <p><strong>Email:</strong> {{ admin.email }}</p>
+            <p><strong>Phone:</strong> +91 98765 43210</p>
+            <p><strong>Date Joined:</strong> {{ admin.date_joined }}</p>
+            <p><strong>Last Login:</strong> {{ admin.last_login }}</p>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% block extra_js %}
+    <script src="{% static 'js/admin_scripts.js' %}"></script>
+{% endblock %}
+
+{% endblock %}

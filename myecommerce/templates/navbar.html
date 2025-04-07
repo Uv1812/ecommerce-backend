@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bhavi India Fashion</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Marcellus&family=Jost:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+  </head>
+  <body {% if user.is_authenticated %}data-user-logged-in="true"{% else %}data-user-logged-in="false"{% endif %}>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'index' %}">Bhavi India Fashion</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'catalog' %}">Products</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'bulk_order' %}">Bulk Orders</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'custom_design' %}"
+                >Custom Design</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'virtual_tryon' %}"
+                >Virtual Try-On</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'tailor_jobs' %}">Tailor Jobs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'chatbot' %}"
+                >Customer Support</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link wishlist-link" href="{% url 'wishlist' %}" title="Wishlist">
+                <i class="far fa-heart"></i>
+                <span class="badge bg-primary wishlist-count">0</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'cart' %}">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="badge bg-primary cart-count">0</span>
+              </a>
+            </li>
+            <span class="user-auth-section">
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  href="#"
+                  data-bs-toggle="modal"
+                  data-bs-target="#loginModal"
+                  >Login</a
+                >
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  href="#"
+                  data-bs-toggle="modal"
+                  data-bs-target="#registerModal"
+                  >Register</a
+                >
+              </li>
+            </span>
+            <li class="nav-item dropdown">
+              <a
+                  class="nav-link dropdown-toggle"
+                  href="{% if user.is_authenticated %}{% url 'profile' %}{% else %}#{% endif %}"
+                  id="userDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+              >
+                  {% if user.is_authenticated %}
+                      <i class="fas fa-user"></i> {{ user.username }}
+                  {% else %}
+                      Profile
+                  {% endif %}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                  {% if user.is_authenticated %}
+                      <li>
+                          <a class="dropdown-item" href="{% url 'profile' %}">My Profile</a>
+                      </li>
+                      <li>
+                          <a class="dropdown-item" href="{% url 'profile' %}#v-pills-orders">My Orders</a>
+                      </li>
+                      <li>
+                          <a class="dropdown-item" href="{% url 'wishlist' %}#v-pills-wishlist">My Wishlist</a>
+                      </li>
+                      <li><hr class="dropdown-divider" /></li>
+                      <li>
+                          <form id="logout-form" action="/logout/"  method="post">
+                              {% csrf_token %}
+                              <a class="dropdown-item logout-btn" href="/logout/">Logout</a>
+                          </form>
+                      </li>
+                  {% else %}
+                      <li class="nav-item">
+                          <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+                      </li>
+                  {% endif %}
+              </ul>
+          </li>  
+          </ul>
+        </div>
+      </div>
+    </nav>
+    {% include 'login.html' %}
+  </body>
+</html>

@@ -1,0 +1,28 @@
+{% extends "admin_dashboard/admin_base.html" %}
+{% block content %}
+<h2>Products</h2>
+
+    <table class="table" style="left-margin:20px;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.product_id }}</td>
+                <td>{{ product.name }}</td>
+                <td>${{ product.price }}</td>
+                <td>{{ product.category }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No products found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}
+

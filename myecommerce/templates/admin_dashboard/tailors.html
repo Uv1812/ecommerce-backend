@@ -1,0 +1,44 @@
+{% extends 'admin_dashboard/admin_base.html' %}
+
+
+{% block content %}
+<div class="container">
+    <h4 class="my-3">Tailors List</h4>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Experience</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tailor in tailors %}
+                    <tr>
+                        <td>{{ tailor.id }}</td>
+                        <td>{{ tailor.name }}</td>
+                        <td>{{ tailor.email }}</td>
+                        <td>{{ tailor.phone }}</td>
+                        <td>{{ tailor.experience }} years</td>
+                        <td>
+                            <a href="{% url 'edit_tailor' tailor.tailor_id %}" class="btn btn-primary btn-sm">Edit</a>
+                            <a href="{% url 'delete_tailor' tailor.tailor_id %}" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">No tailors found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

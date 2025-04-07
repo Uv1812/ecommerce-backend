@@ -1,0 +1,10 @@
+{% extends "admin_dashboard/admin_base.html" %}
+{% block content %}
+    <h2>Payments</h2>
+    <table class="table">
+        <tr><th>Payment ID</th><th>Customer</th><th>Amount</th><th>Status</th></tr>
+        {% for payment in payments %}
+            <tr><td>{{ payment.id }}</td><td>{{ payment.customer }}</td><td>{{ payment.amount }}</td><td>{{ payment.status }}</td></tr>
+        {% endfor %}
+    </table>
+{% endblock %}
